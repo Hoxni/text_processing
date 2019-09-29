@@ -12,6 +12,7 @@ import javax.validation.constraints.Min;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/v1")
 public class WordController {
 

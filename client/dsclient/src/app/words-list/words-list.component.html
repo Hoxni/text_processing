@@ -1,0 +1,70 @@
+<form
+  [formGroup]="form"
+  class="form-horizontal col-md-8 col-md-offset-2"
+  role="form"
+  (ngSubmit)="getAll()" novalidate
+>
+  <fieldset class="col-md-12">
+    <table class="table table-striped table-hover ">
+      <thead>
+      <tr>
+        <th>page</th>
+        <th>page size</th>
+        <th>sort type</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><input formControlName="page"
+                   type="number"
+                   class="form-control"
+                   [ngModel]="1"
+                   [defaultValue]="1"
+        ></td>
+        <td><input formControlName="size"
+                   type="number"
+                   class="form-control"
+                   [ngModel]="10"
+                   [defaultValue]="10"
+        ></td>
+        <td><select formControlName="sort"
+                    type="string"
+                    class="form-control"
+                    [(ngModel)]="sorts[0].name"
+        >
+          <option *ngFor="let sort of sorts"
+                  [value]="sort.name">
+            {{sort.name}}
+          </option>
+        </select></td>
+        <td>
+          <button
+            type="submit"
+            class="btn btn-success"
+          >Show
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </fieldset>
+</form>
+
+<div>
+  <table class="table table-striped table-hover ">
+    <thead>
+    <tr>
+      <th>N</th>
+      <th>Word</th>
+      <th>Frequency</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let word of words; let i = index">
+      <td>{{ i + 1 }}</td>
+      <td>{{ word.word_ }}</td>
+      <td>{{ word.frequency }}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
