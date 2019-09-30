@@ -8,18 +8,42 @@ import {RouterModule, Routes} from "@angular/router";
 import {WordService} from "./word-service/word.service";
 import {HttpClientModule} from "@angular/common/http";
 import {ReactiveFormsModule} from "@angular/forms";
+import { WordDeleteComponent } from './word-delete/word-delete.component';
+import { WordFindComponent } from './word-find/word-find.component';
+import { WordChangeComponent } from './word-change/word-change.component';
+import { WordsExtractComponent } from './words-extract/words-extract.component';
 
 const appRoutes: Routes = [
   {
     path: 'words',
     component: WordsListComponent
   },
+  {
+    path: 'delete',
+    component: WordDeleteComponent
+  },
+  {
+    path: 'find',
+    component: WordFindComponent
+  },
+  {
+    path: 'change',
+    component: WordChangeComponent
+  },
+  {
+    path: 'add',
+    component: WordsExtractComponent
+  },
 ];
 
 @NgModule({
   declarations: [
     AppComponent,
-    WordsListComponent
+    WordsListComponent,
+    WordDeleteComponent,
+    WordFindComponent,
+    WordChangeComponent,
+    WordsExtractComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes),

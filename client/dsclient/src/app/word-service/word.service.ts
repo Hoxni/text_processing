@@ -17,9 +17,27 @@ export class WordService {
 
   getAll(page: number, size: number, sort: string) {
     return this.http.get(`${LinksService.apiUrl}/words?` +
-    `page=${page}&size=${size}&sort=${sort}`).pipe(
+      `page=${page}&size=${size}&sort=${sort}`).pipe(
       map((response: []) => {
         return response.map(o => new Word(o));
       }));
   }
+
+  deleteWord(word: string){
+    return this.http.delete(`${LinksService.apiUrl}/words/${word}`);
+  }
+
+  change(word: string, change: Word){
+    return this.http.put(`${LinksService.apiUrl}/words/${word}`, change);
+  }
+
+
+  findAll(pattern: string, page: number, size: number, sort: string) {
+    return this.http.get(`${LinksService.apiUrl}/words/find?` +
+      `pattern=${pattern}&page=${page}&size=${size}&sort=${sort}`).pipe(
+      map((response: []) => {
+        return response.map(o => new Word(o));
+      }));
+  }
+
 }

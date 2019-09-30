@@ -1,0 +1,43 @@
+<form
+  [formGroup]="form"
+  class="form-horizontal col-md-8 col-md-offset-2"
+  role="form"
+  (ngSubmit)="changeWord()" novalidate
+>
+  <fieldset class="col-md-12">
+    <table class="table table-striped table-hover ">
+      <thead>
+      <tr>
+        <th>Change word</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><p>Existing word</p></td>
+        <td><input formControlName="word"
+                   type="string"
+                   class="form-control"
+        ></td>
+      </tr>
+      <tr>
+        <td><p>Change to</p></td>
+        <td><input formControlName="change"
+                   type="string"
+                   class="form-control"
+        ></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>
+          <button
+            type="submit"
+            class="btn btn-success btn-block"
+          >Change
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </fieldset>
+</form>
