@@ -6,6 +6,7 @@ import com.example.ds1.service.WordService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -40,8 +41,8 @@ public class WordController {
     }
 
     @PostMapping("/words/extract")
-    public ResponseEntity extractWords(@RequestBody ExtractRequestModel request) throws Exception {
-        wordService.extractWords(request.getFilePath());
+    public ResponseEntity extractWords(@RequestBody String model) throws Exception {
+        wordService.extractWords(model);
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
@@ -51,7 +52,7 @@ public class WordController {
     }
 
     @DeleteMapping("/words/{word}")
-    public ResponseEntity<Word> deleteWord(@PathVariable String word) {
+    public ResponseEntity<Integer> deleteWord(@PathVariable String word) {
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .body(wordService.deleteWord(word));
     }

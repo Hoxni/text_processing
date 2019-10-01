@@ -4,6 +4,7 @@ import LinksService from "../links.service";
 import {map} from 'rxjs/operators';
 import {Word} from "../model/word";
 import {FormGroup} from "@angular/forms";
+import {ExtractRequestModel} from "../model/extract-request-model";
 
 @Injectable({
   providedIn: 'root'
@@ -24,13 +25,16 @@ export class WordService {
   }
 
   deleteWord(word: string){
-    return this.http.delete(`${LinksService.apiUrl}/words/${word}`);
+    return this.http.delete(`http://localhost:8086/api/v1/words/${word}`).subscribe();
   }
 
   change(word: string, change: Word){
-    return this.http.put(`${LinksService.apiUrl}/words/${word}`, change);
+    return this.http.put(`${LinksService.apiUrl}/words/${word}`, change).subscribe();
   }
 
+  extractWords(file: string){
+    return this.http.post(`${LinksService.apiUrl}/words/extract`, file).subscribe();
+  }
 
   findAll(pattern: string, page: number, size: number, sort: string) {
     return this.http.get(`${LinksService.apiUrl}/words/find?` +

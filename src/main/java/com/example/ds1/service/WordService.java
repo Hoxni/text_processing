@@ -8,6 +8,7 @@ import com.example.ds1.repository.WordRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -39,8 +40,8 @@ public class WordService {
                 .map(WordMapper::toModel).getContent();
     }
 
-    public void extractWords(String filePath) throws Exception {
-        File file = new File(filePath);
+    public void extractWords(String name) throws Exception {
+        File file = new File("/Users/antonluhavy/Documents/ds1/texts/" + name);
         Map<String, Long> words = getWordsWithFrequency(file);
         for (int i = 0; i < words.keySet().size() / QUERY_SIZE; i++) {
             List<String> wordsList = words.keySet()
@@ -52,9 +53,13 @@ public class WordService {
             existingWords.forEach(wordEntity -> {
                 Long addFrequency = words.get(wordEntity.getWord());
                 wordEntity.setFrequency(wordEntity.getFrequency() + addFrequency);
+                words.remove(wordEntity.getWord());
             });
             wordRepository.saveAll(existingWords);
         }
+        wordRepository.saveAll(words.entrySet().stream()
+                .map(w -> WordEntity.builder().word(w.getKey()).frequency(w.getValue()).build())
+                .collect(Collectors.toList()));
     }
 
     protected Map<String, Long> getWordsWithFrequency(File file) throws FileNotFoundException {
@@ -91,8 +96,8 @@ public class WordService {
         }
     }
 
-    public Word deleteWord(String word) {
-        return WordMapper.toModel(wordRepository.deleteByWord(word)
-                .orElseThrow(() -> new WordNotFoundException(word)));
+    @Transactional
+    public Integer deleteWord(String word) {
+        return wordRepository.deleteByWord(word);
     }
 }

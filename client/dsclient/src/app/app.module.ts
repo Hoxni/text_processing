@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { WordsListComponent } from './words-list/words-list.component';
@@ -12,6 +11,7 @@ import { WordDeleteComponent } from './word-delete/word-delete.component';
 import { WordFindComponent } from './word-find/word-find.component';
 import { WordChangeComponent } from './word-change/word-change.component';
 import { WordsExtractComponent } from './words-extract/words-extract.component';
+import {MatDialogModule} from "@angular/material/dialog";
 
 const appRoutes: Routes = [
   {
@@ -43,7 +43,7 @@ const appRoutes: Routes = [
     WordDeleteComponent,
     WordFindComponent,
     WordChangeComponent,
-    WordsExtractComponent
+    WordsExtractComponent,
   ],
   imports: [
     RouterModule.forRoot(appRoutes),
@@ -51,7 +51,9 @@ const appRoutes: Routes = [
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
+    MatDialogModule,
   ],
+
   providers: [
     WordService,
   ],

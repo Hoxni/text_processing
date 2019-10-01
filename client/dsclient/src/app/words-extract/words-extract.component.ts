@@ -1,4 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {MatDialog} from "@angular/material/dialog";
+import {WordService} from "../word-service/word.service";
+import {Router} from "@angular/router";
+import {FormBuilder} from "@angular/forms";
+import {ExtractRequestModel} from "../model/extract-request-model";
 
 @Component({
   selector: 'app-words-extract',
@@ -7,7 +12,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class WordsExtractComponent implements OnInit {
 
-  constructor() { }
+  constructor(public dialog: MatDialog, private wordService: WordService, private router: Router, private fb: FormBuilder) {
+  }
+
+  @ViewChild('fileInput', null) el: ElementRef;
+
+  private file: string;
+
+  fileUpload(e) {
+    console.log(this.el);
+    this.file = e.target.files[0].name;
+  }
+
+  extractWords(){
+    this.wordService.extractWords(this.file);
+  }
 
   ngOnInit() {
   }

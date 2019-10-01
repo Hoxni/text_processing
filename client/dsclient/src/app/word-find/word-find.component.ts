@@ -29,6 +29,7 @@ export class WordFindComponent implements OnInit {
       sort: [this.sort]
     });
 
+
     this.findAll = this.findAll.bind(this);
   };
 

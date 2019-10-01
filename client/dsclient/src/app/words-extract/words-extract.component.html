@@ -1,1 +1,15 @@
-<p>words-extract works!</p>
+<table class="table table-striped table-hover ">
+  <tbody>
+  <tr>
+    <td><input class="btn btn-primary" #fileInput (change)="fileUpload($event)" type="file" accept="text/plain">
+    </td>
+    <td>
+      <button
+        class="btn btn-success btn-block"
+        (click)="extractWords()"
+      >Extract words
+      </button>
+    </td>
+  </tr>
+  </tbody>
+</table>

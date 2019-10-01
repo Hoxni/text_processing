@@ -15,7 +15,7 @@ public interface WordRepository extends PagingAndSortingRepository<WordEntity, L
 
     Optional<WordEntity> findByWord(String word);
 
-    Optional<WordEntity> deleteByWord(String word);
+    Integer deleteByWord(String word);
 
     Page<WordEntity> findAllByWordLike(String pattern, Pageable pageable);
 
