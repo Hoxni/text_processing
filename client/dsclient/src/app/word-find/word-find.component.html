@@ -79,12 +79,12 @@
                    [ngModel]="10"
                    [defaultValue]="10"
         ></td>
-        <td><select formControlName="sort"
+        <td><select formControlName="sorts"
                     type="string"
                     class="form-control"
-                    [(ngModel)]="findType[0].name"
+                    [(ngModel)]="sorts[0].name"
         >
-          <option *ngFor="let sort of findType"
+          <option *ngFor="let sort of sorts"
                   [value]="sort.name">
             {{sort.name}}
           </option>

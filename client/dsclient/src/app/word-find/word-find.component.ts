@@ -14,19 +14,19 @@ export class WordFindComponent implements OnInit {
   private words: Word[];
   private form: FormGroup;
   private findType: { name: string }[];
-  private sort: { name: string }[];
+  private sorts: { name: string }[];
 
   constructor(private wordService: WordService, private router: Router, private fb: FormBuilder) {
 
     this.findType = this.getFindTypes();
-    this.sort = this.getSortTypes();
+    this.sorts = this.getSortTypes();
 
     this.form = fb.group({
       pattern: [''],
       page: [''],
       size: [''],
       findType: [this.findType],
-      sort: [this.sort]
+      sorts: [this.sorts]
     });
 
 
@@ -52,7 +52,7 @@ export class WordFindComponent implements OnInit {
     const pattern: string = this.form.controls['pattern'].value;
     const page: number = this.form.controls['page'].value;
     const size: number = this.form.controls['size'].value;
-    const sort: string = this.form.controls['sort'].value;
+    const sort: string = this.form.controls['sorts'].value;
 
     return this.wordService.findAll(pattern, page, size, sort)
       .subscribe(data => {
