@@ -28,6 +28,10 @@ export class WordsExtractComponent implements OnInit {
     this.wordService.extractWords(this.file);
   }
 
+  addWord(word: string){
+    this.wordService.addWord(word);
+  }
+
   ngOnInit() {
   }
 

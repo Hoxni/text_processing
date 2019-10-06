@@ -100,4 +100,11 @@ public class WordService {
     public Integer deleteWord(String word) {
         return wordRepository.deleteByWord(word);
     }
+
+    public void addWord(Word word) {
+        boolean isPresent = wordRepository.findByWord(word.getWord()).isPresent();
+        if (!isPresent) {
+            wordRepository.save(WordMapper.toEntity(word));
+        }
+    }
 }

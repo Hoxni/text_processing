@@ -1,9 +1,9 @@
 export class Word {
-  word_: string;
+  word: string;
   frequency: bigint;
 
   constructor({word, frequency}){
-    this.word_ = word;
+    this.word = word;
     this.frequency = frequency;
   }
 

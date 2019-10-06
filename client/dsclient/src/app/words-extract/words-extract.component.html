@@ -1,5 +1,18 @@
+<form (submit)="addWord(word.value)">
 <table class="table table-striped table-hover ">
   <tbody>
+  <tr>
+      <td>
+        <input type="string" class="form-control" #word placeholder="New Word">
+      </td>
+      <td>
+        <button
+          type="submit"
+          class="btn btn-success btn-block"
+        >Add word
+        </button>
+      </td>
+  </tr>
   <tr>
     <td><input class="btn btn-primary" #fileInput (change)="fileUpload($event)" type="file" accept="text/plain">
     </td>
@@ -13,3 +26,4 @@
   </tr>
   </tbody>
 </table>
+</form>

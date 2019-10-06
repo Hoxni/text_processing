@@ -6,7 +6,7 @@ import { WordsListComponent } from './words-list/words-list.component';
 import {RouterModule, Routes} from "@angular/router";
 import {WordService} from "./word-service/word.service";
 import {HttpClientModule} from "@angular/common/http";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { WordDeleteComponent } from './word-delete/word-delete.component';
 import { WordFindComponent } from './word-find/word-find.component';
 import { WordChangeComponent } from './word-change/word-change.component';
@@ -52,6 +52,7 @@ const appRoutes: Routes = [
     HttpClientModule,
     ReactiveFormsModule,
     MatDialogModule,
+    FormsModule,
   ],
 
   providers: [

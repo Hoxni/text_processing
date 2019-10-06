@@ -31,6 +31,12 @@ public class WordController {
         return ResponseEntity.ok(wordService.getAllWords(page, size, sort));
     }
 
+    @PostMapping("/words")
+    public ResponseEntity addWord(@RequestBody Word word) {
+        wordService.addWord(word);
+        return ResponseEntity.ok(HttpStatus.CREATED);
+    }
+
     @GetMapping("/words/find")
     public ResponseEntity<List<Word>> findWordsWithPattern(
             @RequestParam String pattern,

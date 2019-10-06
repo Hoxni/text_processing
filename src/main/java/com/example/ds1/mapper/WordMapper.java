@@ -10,4 +10,10 @@ public class WordMapper {
                 .frequency(entity.getFrequency())
                 .build();
     }
+
+    public static WordEntity toEntity(Word model) {
+        return WordEntity.builder()
+                .word(model.getWord())
+                .frequency(model.getFrequency()).build();
+    }
 }
