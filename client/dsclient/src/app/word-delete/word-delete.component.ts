@@ -49,7 +49,7 @@ export class WordDeleteComponent {
   deleteWords() {
     this.words.forEach(value => {
       if (value.selected) {
-        this.wordService.deleteWord(value.word.word)
+        this.wordService.deleteWord(value.word.word.trim())
       }
     });
 

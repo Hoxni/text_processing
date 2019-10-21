@@ -4,29 +4,32 @@ import com.example.ds1.entity.WordEntity;
 import com.example.ds1.error.WordNotFoundException;
 import com.example.ds1.mapper.WordMapper;
 import com.example.ds1.model.Word;
+import com.example.ds1.postagging.POSTagging;
 import com.example.ds1.repository.WordRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.example.ds1.utils.Utils.createPageable;
 import static com.example.ds1.utils.Utils.zeroIfNull;
 
 @Service
+@RequiredArgsConstructor
 public class WordService {
 
     private final WordRepository wordRepository;
+    private final POSTagging posTagging;
 
     private static final Long QUERY_SIZE = 1000L;
-
-    public WordService(WordRepository wordRepository) {
-        this.wordRepository = wordRepository;
-    }
 
     public List<Word> getAllWords(int page, int size, String sort) {
         Pageable pageable = createPageable(page, size, sort);
@@ -40,10 +43,10 @@ public class WordService {
                 .map(WordMapper::toModel).getContent();
     }
 
-    public void extractWords(String name) throws Exception {
-        File file = new File("/Users/antonluhavy/Documents/ds1/texts/" + name);
-        Map<String, Long> words = getWordsWithFrequency(file);
-        for (int i = 0; i < words.keySet().size() / QUERY_SIZE; i++) {
+    @Transactional
+    public void extractWords(String file) throws Exception {
+        Map<String, WordEntity> words = getWordsWithFrequency(file);
+        for (int i = 0; i <= words.keySet().size() / QUERY_SIZE; i++) {
             List<String> wordsList = words.keySet()
                     .stream()
                     .skip(i * QUERY_SIZE)
@@ -51,31 +54,23 @@ public class WordService {
                     .collect(Collectors.toList());
             List<WordEntity> existingWords = wordRepository.findAllByWordIn(wordsList);
             existingWords.forEach(wordEntity -> {
-                Long addFrequency = words.get(wordEntity.getWord());
-                wordEntity.setFrequency(wordEntity.getFrequency() + addFrequency);
-                words.remove(wordEntity.getWord());
+                try {
+                    WordEntity w = words.get(wordEntity.getWord());
+                    wordEntity.setFrequency(zeroIfNull(wordEntity.getFrequency()) + w.getFrequency());
+                    wordEntity.getTags().addAll(w.getTags());
+                    words.remove(wordEntity.getWord());
+                } catch (Exception e) { e.printStackTrace();
+                    System.out.println(wordEntity);}
             });
             wordRepository.saveAll(existingWords);
         }
-        wordRepository.saveAll(words.entrySet().stream()
-                .map(w -> WordEntity.builder().word(w.getKey()).frequency(w.getValue()).build())
-                .collect(Collectors.toList()));
+        wordRepository.saveAll(words.values());
     }
 
-    protected Map<String, Long> getWordsWithFrequency(File file) throws FileNotFoundException {
-        Scanner scanner = new Scanner(file);
-        Map<String, Long> words = new HashMap<>();
-        while (scanner.hasNext()) {
-            String word = scanner.next()
-                    .toLowerCase()
-                    .replaceAll("[^\\w\\'\\-]", "")
-                    .replaceAll("\\d+", "");
-            if (!word.equals("-")) {
-                Long frequency = zeroIfNull(words.get(word));
-                words.put(word, frequency + 1);
-            }
-        }
-        return words;
+    protected Map<String, WordEntity> getWordsWithFrequency(String file) throws IOException {
+        String path = "texts/" + file;
+        String text = new String(Files.readAllBytes(Paths.get(path)));
+        return posTagging.tag(text);
     }
 
     public Word changeWord(String word, Word change) {
@@ -103,7 +98,7 @@ public class WordService {
 
     public void addWord(Word word) {
         boolean isPresent = wordRepository.findByWord(word.getWord()).isPresent();
-        if (!isPresent) {
+        if (!isPresent && !word.getWord().equals("")) {
             wordRepository.save(WordMapper.toEntity(word));
         }
     }
