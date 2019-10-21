@@ -26,7 +26,7 @@ export class WordService {
 
   addWord(word: string){
     return this.http.post(`http://localhost:8086/api/v1/words`,
-      new Word({word: word, frequency: 0}))
+      new Word({word: word, frequency: 0, tags: null}))
       .subscribe();
   }
 

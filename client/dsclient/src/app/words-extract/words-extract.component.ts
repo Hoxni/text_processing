@@ -29,7 +29,7 @@ export class WordsExtractComponent implements OnInit {
   }
 
   addWord(word: string){
-    this.wordService.addWord(word);
+    this.wordService.addWord(word.trim());
   }
 
   ngOnInit() {

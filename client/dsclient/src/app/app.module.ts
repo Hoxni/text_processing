@@ -12,6 +12,7 @@ import { WordFindComponent } from './word-find/word-find.component';
 import { WordChangeComponent } from './word-change/word-change.component';
 import { WordsExtractComponent } from './words-extract/words-extract.component';
 import {MatDialogModule} from "@angular/material/dialog";
+import {MatInputModule} from "@angular/material/input";
 
 const appRoutes: Routes = [
   {
@@ -53,6 +54,7 @@ const appRoutes: Routes = [
     ReactiveFormsModule,
     MatDialogModule,
     FormsModule,
+    MatInputModule,
   ],
 
   providers: [
