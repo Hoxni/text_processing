@@ -31,7 +31,6 @@ export class WordChangeComponent implements OnInit {
       sorts: [this.sorts]
     });
 
-
     this.findAll = this.findAll.bind(this);
   };
 
