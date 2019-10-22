@@ -65,7 +65,6 @@ public class POSTagging {
                             w.setFrequency(w.getFrequency() + 1);
                             if (tag.matches("\\w+\\$*")) {
                                 w.getTags().add(new WordTag(tag));
-
                                 System.out.println(word + " " + tag);
                             }
                         } else {
