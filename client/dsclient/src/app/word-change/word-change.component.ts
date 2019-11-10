@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {WordService} from "../word-service/word.service";
 import {Router} from "@angular/router";
 import {Word} from "../model/word";
+import {IDropdownSettings} from "ng-multiselect-dropdown";
 
 @Component({
   selector: 'app-word-change',
@@ -17,11 +18,14 @@ export class WordChangeComponent implements OnInit {
   private sorts: { name: string }[];
   private row: number;
   private word: string;
+  private dropdownSettings: IDropdownSettings;
+  private tags: { id: string }[];
 
   constructor(private wordService: WordService, private router: Router, private fb: FormBuilder) {
 
     this.findType = this.getFindTypes();
     this.sorts = this.getSortTypes();
+    this.tags = this.initTags();
 
     this.form = fb.group({
       pattern: [''],
@@ -31,6 +35,16 @@ export class WordChangeComponent implements OnInit {
       sorts: [this.sorts]
     });
 
+    this.dropdownSettings = {
+      singleSelection: false,
+      idField: 'id',
+      textField: 'id',
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      allowSearchFilter: true,
+      enableCheckAll: false,
+    };
+
     this.findAll = this.findAll.bind(this);
   };
 
@@ -38,7 +52,7 @@ export class WordChangeComponent implements OnInit {
     const word = this.words[this.row].word.trim();
     const change = input.innerText;
     this.word = change;
-    this.wordService.change(word, new Word({word: change, frequency: null, tags: null}));
+    this.wordService.change(word, new Word({word: change, frequency: null, tags: this.words[this.row].tags, lemma: null}));
   }
 
   getFindTypes() {
@@ -54,6 +68,50 @@ export class WordChangeComponent implements OnInit {
       {name: 'alphabetic_desc'},
       {name: 'frequency'},
       {name: 'frequency_desc'}];
+  }
+
+  initTags() {
+    return [
+      {id: 'WRB'},
+      {id: 'WP$'},
+      {id: 'WP'},
+      {id: 'WDT'},
+      {id: 'VP'},
+      {id: 'VBZ'},
+      {id: 'VBP'},
+      {id: 'VBN'},
+      {id: 'VBG'},
+      {id: 'VBD'},
+      {id: 'VB'},
+      {id: 'UH'},
+      {id: 'TO'},
+      {id: 'SYM'},
+      {id: 'RP'},
+      {id: 'RBS'},
+      {id: 'RBR'},
+      {id: 'RB'},
+      {id: 'PRP$'},
+      {id: 'PRP'},
+      {id: 'PP'},
+      {id: 'POS'},
+      {id: 'PDT'},
+      {id: 'NP'},
+      {id: 'NNS'},
+      {id: 'NNPS'},
+      {id: 'NNP'},
+      {id: 'NN'},
+      {id: 'MD'},
+      {id: 'LS'},
+      {id: 'JJS'},
+      {id: 'JJR'},
+      {id: 'JJ'},
+      {id: 'IN'},
+      {id: 'FW'},
+      {id: 'EX'},
+      {id: 'DT'},
+      {id: 'CD'},
+      {id: 'CC'}
+    ];
   }
 
   findAll() {
@@ -80,6 +138,9 @@ export class WordChangeComponent implements OnInit {
   onBlur(event, input) {
     if (event.relatedTarget !== null && event.relatedTarget.id === 'change') {
       this.changeWord(input);
+    } else if (event.relatedTarget !== null &&
+      event.relatedTarget.className === 'dropdown-btn' &&
+      event.path[4].rowIndex - 1 === this.row) {
     } else {
       this.row = null;
       input.firstChild.data = this.word;
@@ -87,6 +148,14 @@ export class WordChangeComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  onSelect(e, i) {
+    this.words[i].tags.push(e.id);
+  }
+
+  onDeSelect(e, i) {
+    this.words[i].tags = this.words[i].tags.filter(t => t !== e.id);
   }
 
 }

@@ -51,4 +51,8 @@ export class WordsListComponent {
       });
   }
 
+  showPopover(e){
+
+  }
+
 }

@@ -1,6 +1,7 @@
 package com.example.ds1.service;
 
 import com.example.ds1.entity.WordEntity;
+import com.example.ds1.entity.WordTag;
 import com.example.ds1.error.WordNotFoundException;
 import com.example.ds1.mapper.WordMapper;
 import com.example.ds1.model.Word;
@@ -31,6 +32,7 @@ public class WordService {
 
     private static final Long QUERY_SIZE = 1000L;
 
+    @Transactional
     public List<Word> getAllWords(int page, int size, String sort) {
         Pageable pageable = createPageable(page, size, sort);
         return wordRepository.findAll(pageable).get()
@@ -76,6 +78,7 @@ public class WordService {
         return posTagging.tag(text);
     }
 
+    @Transactional
     public Word changeWord(String word, Word change) {
         WordEntity wordEntity = wordRepository.findByWord(word)
                 .orElseThrow(() -> new WordNotFoundException(word));
@@ -84,11 +87,13 @@ public class WordService {
             WordEntity wordEntity1 = optional.get();
             wordEntity1.setFrequency(
                     wordEntity1.getFrequency() + wordEntity.getFrequency());
+            wordEntity1.setTags(change.getTags().stream().map(WordTag::new).collect(Collectors.toSet()));
             wordRepository.save(wordEntity1);
             wordRepository.delete(wordEntity);
             return WordMapper.toModel(wordEntity1);
         } else {
             wordEntity.setWord(change.getWord());
+            wordEntity.setTags(change.getTags().stream().map(WordTag::new).collect(Collectors.toSet()));
             WordEntity result = wordRepository.save(wordEntity);
             return WordMapper.toModel(result);
         }

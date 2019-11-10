@@ -13,6 +13,11 @@ import { WordChangeComponent } from './word-change/word-change.component';
 import { WordsExtractComponent } from './words-extract/words-extract.component';
 import {MatDialogModule} from "@angular/material/dialog";
 import {MatInputModule} from "@angular/material/input";
+import {MatSelectModule} from "@angular/material/select";
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import {MatTooltipModule} from "@angular/material/tooltip";
+import { TooltipModule } from 'ng2-tooltip-directive';
+import {PopoverModule} from 'ngx-popover';
 
 const appRoutes: Routes = [
   {
@@ -55,6 +60,11 @@ const appRoutes: Routes = [
     MatDialogModule,
     FormsModule,
     MatInputModule,
+    MatSelectModule,
+    NgMultiSelectDropDownModule,
+    MatTooltipModule,
+    TooltipModule,
+    PopoverModule,
   ],
 
   providers: [

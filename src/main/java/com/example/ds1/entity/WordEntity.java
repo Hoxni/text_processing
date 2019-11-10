@@ -25,6 +25,11 @@ public class WordEntity {
     private Long frequency;
 
     @Getter
+    @Setter
+    private String lemma;
+
+    @Getter
+    @Setter
     @ManyToMany
     @JoinTable(
             name = "word_tag",

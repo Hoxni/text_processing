@@ -11,4 +11,5 @@ public class Word {
     private String word;
     private Long frequency;
     private Set<String> tags;
+    private String lemma;
 }

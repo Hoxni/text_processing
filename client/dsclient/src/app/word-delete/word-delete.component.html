@@ -88,7 +88,7 @@
         <td><select formControlName="sorts"
                     type="string"
                     class="form-control"
-                    [(ngModel)]="sorts[0].name"
+                    [selectedIndex]="0"
         >
           <option *ngFor="let sort of sorts"
                   [value]="sort.name">

@@ -3,6 +3,7 @@ package com.example.ds1.postagging;
 import com.example.ds1.entity.WordEntity;
 import com.example.ds1.entity.WordTag;
 import com.example.ds1.repository.WordRepository;
+import opennlp.tools.lemmatizer.DictionaryLemmatizer;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
 import opennlp.tools.sentdetect.SentenceDetector;
@@ -11,6 +12,7 @@ import opennlp.tools.sentdetect.SentenceModel;
 import opennlp.tools.tokenize.WhitespaceTokenizer;
 import org.springframework.stereotype.Service;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -18,13 +20,11 @@ import java.util.*;
 @Service
 public class POSTagging {
 
-    private final WordRepository wordRepository;
-
     private POSTaggerME tagger = null;
     private POSModel model = null;
+    private DictionaryLemmatizer lemmatizer;
 
     public POSTagging(WordRepository wordRepository) {
-        this.wordRepository = wordRepository;
     }
 
     public void initialize(String lexiconFileName) {
@@ -32,6 +32,8 @@ public class POSTagging {
             InputStream modelStream = getClass().getResourceAsStream(lexiconFileName);
             model = new POSModel(modelStream);
             tagger = new POSTaggerME(model);
+            InputStream dictLemmatizer = getClass().getResourceAsStream("/en-lemmatizer.dict");
+            lemmatizer = new DictionaryLemmatizer(dictLemmatizer);
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -50,33 +52,42 @@ public class POSTagging {
                     whitespaceTokenizerLine[whitespaceTokenizerLine.length - 1] =
                             whitespaceTokenizerLine[whitespaceTokenizerLine.length - 1]
                                     .replaceAll("[,.?!]+", "");
+
                     String[] tags = tagger.tag(whitespaceTokenizerLine);
+
+                    String[] lemmas = lemmatizer.lemmatize(whitespaceTokenizerLine, tags);
+
                     for (int i = 0; i < whitespaceTokenizerLine.length; i++) {
                         String word = whitespaceTokenizerLine[i]
                                 .trim()
                                 .toLowerCase()
                                 .replaceAll("[,.!?]+", "")
                                 .replaceAll("[^\\w\\'\\-]", "")
+                                .replaceAll("'\\w+", "")
+                                .replaceAll("\\w+'", "")
                                 .replaceAll("\\d+", "");
                         String tag = tags[i].trim()
                                 .replaceAll("[,.!?]+", "");
+                        String lemma = !lemmas[i].equals("O") ? lemmas[i] : word;
                         if (words.containsKey(word)) {
                             WordEntity w = words.get(word);
                             w.setFrequency(w.getFrequency() + 1);
                             if (tag.matches("\\w+\\$*")) {
                                 w.getTags().add(new WordTag(tag));
-                                System.out.println(word + " " + tag);
+                                w.setLemma(lemma);
+                                System.out.println(word + " " + tag + " " + lemma);
                             }
                         } else {
                             Set<WordTag> wordTags = new HashSet<>();
                             if (tag.matches("\\w+\\$*")) {
                                 wordTags.add(new WordTag(tag));
-                                System.out.println(word + " " + tag);
+                                System.out.println(word + " " + tag + " " + lemma);
                             }
                             words.put(word, WordEntity.builder()
                                     .word(word)
                                     .frequency(1L)
                                     .tags(wordTags)
+                                    .lemma(lemma)
                                     .build());
                         }
                     }

@@ -14,6 +14,7 @@ public class WordMapper {
                 .tags(entity.getTags().stream()
                         .map(WordTag::getTagName)
                         .collect(Collectors.toSet()))
+                .lemma(entity.getLemma())
                 .build();
     }
 
