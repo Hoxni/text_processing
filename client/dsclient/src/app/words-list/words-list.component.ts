@@ -14,6 +14,8 @@ export class WordsListComponent {
   private words: Word[];
   private form: FormGroup;
   private sorts: { name: string}[];
+  private sort: string;
+  private tag: Map<string, bigint>;
 
   constructor(private wordService: WordService, private router: Router, private fb: FormBuilder) {
     this.wordService.getAll(1, 10, 'alphabetic')
@@ -30,6 +32,10 @@ export class WordsListComponent {
     });
 
     this.getAll = this.getAll.bind(this);
+
+    this.sort = 'alphabetic';
+
+    this.tagStat();
   };
 
   getSortTypes(){
@@ -43,12 +49,22 @@ export class WordsListComponent {
   getAll() {
     const page: number = this.form.controls['page'].value;
     const size: number = this.form.controls['size'].value;
-    const sort: string = this.form.controls['sort'].value;
+    //const sort: string = 'alphabetic';
 
-    return this.wordService.getAll(page, size, sort)
+    return this.wordService.getAll(page, size, this.sort)
       .subscribe(data => {
         this.words = data;
       });
+  }
+
+  setSort(e) {
+    this.sort = e.currentTarget.value;
+  }
+
+  tagStat() {
+    this.wordService.tagStat().subscribe(data => {
+      data.forEach(d => this.tag.set(d.word, d.frequency));
+    });
   }
 
   showPopover(e){

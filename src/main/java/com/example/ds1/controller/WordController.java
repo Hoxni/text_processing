@@ -1,12 +1,10 @@
 package com.example.ds1.controller;
 
-import com.example.ds1.model.ExtractRequestModel;
 import com.example.ds1.model.Word;
 import com.example.ds1.service.WordService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -61,5 +59,16 @@ public class WordController {
     public ResponseEntity<Integer> deleteWord(@PathVariable String word) {
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .body(wordService.deleteWord(word));
+    }
+
+    @PostMapping("/words/text")
+    public ResponseEntity<Word> text(@RequestBody String model) throws Exception {
+        String text = wordService.text(model);
+        return ResponseEntity.ok(Word.builder().word(text).build());
+    }
+
+    @PostMapping("/words/stat")
+    public ResponseEntity<List<Word>> stat(@RequestBody String model) throws Exception {
+        return ResponseEntity.ok(wordService.stat(model));
     }
 }

@@ -32,6 +32,7 @@
                     type="string"
                     class="form-control"
                     [selectedIndex]="0"
+                    (click)="setSort($event)"
         >
           <option *ngFor="let sort of sorts"
                   [value]="sort.name">
@@ -60,6 +61,7 @@
       <th>Frequency</th>
       <th>Tags</th>
       <th>Init from</th>
+      <th>Init form tags</th>
     </tr>
     </thead>
     <tbody>
@@ -115,6 +117,52 @@
         <button class="btn btn-outline-info btn-sm" [popover]="myPopover">?</button>
       </td>
       <td>{{ word.lemma }}</td>
+      <td><popover-content #myPopover
+                           placement="right"
+                           [animation]="true"
+                           [closeOnClickOutside]="true" >
+        <table>
+          <tr *ngIf="word.lemmaTags.includes('CC')"><td>CC</td><td>Coordinating conjunction</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('CD')"><td>CD</td><td>Cardinal number</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('DT')"><td>DT</td><td>Determiner</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('EX')"><td>EX</td><td>Existential there</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('FW')"><td>FW</td><td>Foreign word</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('IN')"><td>IN</td><td>Preposition or subordinating conjunction</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('JJ')"><td>JJ</td><td>Adjective</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('JJR')"><td>JJR</td><td>Adjective, comparative</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('JJS')"><td>JJS</td><td>Adjective, superlative</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('LS')"><td>LS</td><td>List item marker</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('MD')"><td>MD</td><td>Modal</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('NN')"><td>NN</td><td>Noun, singular or mass</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('NNS')"><td>NNS</td><td>Noun, plural</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('NNP')"><td>NNP</td><td>Proper noun, singular</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('NNPS')"><td>NNPS</td><td>Proper noun, plural</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('PDT')"><td>PDT</td><td>Predeterminer</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('POS')"><td>POS</td><td>Possessive ending</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('PRP')"><td>PRP</td><td>Personal pronoun</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('PRP$')"><td>PRP$</td><td>Possessive pronoun</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('RB')"><td>RB</td><td>Adverb</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('RBR')"><td>RBR</td><td>Adverb, comparative</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('RBS')"><td>RBS</td><td>Adverb, superlative</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('RP')"><td>RP</td><td>Particle</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('SYM')"><td>SYM</td><td>Symbol</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('TO')"><td>TO</td><td>to</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('UH')"><td>UH</td><td>Interjection</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('VB')"><td>VB</td><td>Verb, base form</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('VBD')"><td>VBD</td><td>Verb, past tense</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('VBG')"><td>VBG</td><td>Verb, gerund or present participle</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('VBN')"><td>VBN</td><td>Verb, past participle</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('VBP')"><td>VBP</td><td>Verb, non-3rd person singular present</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('VBZ')"><td>VBZ</td><td>Verb, 3rd person singular present</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('WDT')"><td>WDT</td><td>Wh-determiner</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('WP')"><td>WP</td><td>Wh-pronoun</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('WP$')"><td>WP$</td><td>Possessive wh-pronoun</td></tr>
+          <tr *ngIf="word.lemmaTags.includes('WRB')"><td>WRB</td><td>Wh-adverb</td></tr>
+        </table>
+      </popover-content>
+        {{ word.lemmaTags }}
+        <button class="btn btn-outline-info btn-sm" [popover]="myPopover">?</button>
+      </td>
     </tr>
     </tbody>
   </table>

@@ -1,0 +1,44 @@
+<table class="table table-striped table-hover ">
+  <tbody>
+  <tr>
+    <td><input class="btn btn-primary" #fileInput (change)="fileUpload($event)" type="file" accept="text/plain">
+    </td>
+    <td>
+      <button
+        class="btn btn-success btn-block"
+        (click)="annotateText()"
+      >Annotate text
+      </button>
+    </td>
+    <td>
+      <button
+        class="btn btn-success btn-block"
+        (click)="stat()"
+      >Get stat
+      </button>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<table>
+  <tr>
+    <td style="display:block;position:relative;top:20px; font-weight: 500">{{text}}</td>
+    <td>
+      <table class="table table-striped table-hover ">
+        <thead>
+        <tr>
+          <th>Word_Tag</th>
+          <th>Frequency</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let stat of stats">
+          <td>{{ stat.word }}</td>
+          <td>{{ stat.frequency }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </td>
+  </tr>
+</table>

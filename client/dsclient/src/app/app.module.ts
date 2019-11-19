@@ -18,6 +18,7 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import {MatTooltipModule} from "@angular/material/tooltip";
 import { TooltipModule } from 'ng2-tooltip-directive';
 import {PopoverModule} from 'ngx-popover';
+import { TextAnnotateComponent } from './text-annotate/text-annotate.component';
 
 const appRoutes: Routes = [
   {
@@ -40,6 +41,10 @@ const appRoutes: Routes = [
     path: 'add',
     component: WordsExtractComponent
   },
+  {
+    path: 'text',
+    component: TextAnnotateComponent
+  },
 ];
 
 @NgModule({
@@ -50,6 +55,7 @@ const appRoutes: Routes = [
     WordFindComponent,
     WordChangeComponent,
     WordsExtractComponent,
+    TextAnnotateComponent,
   ],
   imports: [
     RouterModule.forRoot(appRoutes),

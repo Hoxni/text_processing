@@ -52,7 +52,7 @@ export class WordChangeComponent implements OnInit {
     const word = this.words[this.row].word.trim();
     const change = input.innerText;
     this.word = change;
-    this.wordService.change(word, new Word({word: change, frequency: null, tags: this.words[this.row].tags, lemma: null}));
+    this.wordService.change(word, new Word({word: change, frequency: null, tags: this.words[this.row].tags, lemma: null, lemmaTags: null}));
   }
 
   getFindTypes() {

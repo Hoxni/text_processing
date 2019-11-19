@@ -36,13 +36,21 @@ public class WordService {
     public List<Word> getAllWords(int page, int size, String sort) {
         Pageable pageable = createPageable(page, size, sort);
         return wordRepository.findAll(pageable).get()
-                .map(WordMapper::toModel).collect(Collectors.toList());
+                .map(w -> WordMapper.toModel(w,
+                        wordRepository.getTagsByWord(w.getLemma()).stream()
+                                .map(WordTag::getTagName)
+                                .collect(Collectors.toSet())))
+                .collect(Collectors.toList());
     }
 
     public List<Word> findWordsWithPattern(String pattern, int page, int size, String sort) {
         Pageable pageable = createPageable(page, size, sort);
         return wordRepository.findAllByWordLike(pattern + "%", pageable)
-                .map(WordMapper::toModel).getContent();
+                .map(w -> WordMapper.toModel(w,
+                        wordRepository.getTagsByWord(w.getLemma()).stream()
+                                .map(WordTag::getTagName)
+                                .collect(Collectors.toSet())))
+                .getContent();
     }
 
     @Transactional
@@ -64,8 +72,10 @@ public class WordService {
                         wordEntity.getTags().addAll(w.getTags());
                     }
                     words.remove(wordEntity.getWord());
-                } catch (Exception e) { e.printStackTrace();
-                    System.out.println(wordEntity);}
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println(wordEntity);
+                }
             });
             wordRepository.saveAll(existingWords);
         }
@@ -90,12 +100,18 @@ public class WordService {
             wordEntity1.setTags(change.getTags().stream().map(WordTag::new).collect(Collectors.toSet()));
             wordRepository.save(wordEntity1);
             wordRepository.delete(wordEntity);
-            return WordMapper.toModel(wordEntity1);
+            return WordMapper.toModel(wordEntity1,
+                    wordRepository.getTagsByWord(wordEntity1.getLemma()).stream()
+                            .map(WordTag::getTagName)
+                            .collect(Collectors.toSet()));
         } else {
             wordEntity.setWord(change.getWord());
             wordEntity.setTags(change.getTags().stream().map(WordTag::new).collect(Collectors.toSet()));
             WordEntity result = wordRepository.save(wordEntity);
-            return WordMapper.toModel(result);
+            return WordMapper.toModel(result,
+                    wordRepository.getTagsByWord(result.getLemma()).stream()
+                            .map(WordTag::getTagName)
+                            .collect(Collectors.toSet()));
         }
     }
 
@@ -109,5 +125,17 @@ public class WordService {
         if (!isPresent && !word.getWord().equals("")) {
             wordRepository.save(WordMapper.toEntity(word));
         }
+    }
+
+    public String text(String model) throws Exception {
+        String path = "texts/" + model;
+        String text = new String(Files.readAllBytes(Paths.get(path)));
+        return posTagging.text(text);
+    }
+
+    public List<Word> stat(String model) throws Exception {
+        String path = "texts/" + model;
+        String text = new String(Files.readAllBytes(Paths.get(path)));
+        return posTagging.statistics(text);
     }
 }

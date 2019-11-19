@@ -5,6 +5,9 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.Set;
 
+import static javax.persistence.CascadeType.MERGE;
+import static javax.persistence.FetchType.LAZY;
+
 @Entity
 @Table(name = "words")
 @Builder
@@ -14,10 +17,13 @@ public class WordEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
+    @Setter
     private Long id;
 
     @Getter
     @Setter
+    @Column(name = "word", nullable = false, unique = true)
     private String word;
 
     @Getter
@@ -37,4 +43,6 @@ public class WordEntity {
             inverseJoinColumns = @JoinColumn(name = "tag_tag_name"))
     @ElementCollection(targetClass = WordTag.class)
     private Set<WordTag> tags;
+
+
 }

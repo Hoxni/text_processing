@@ -52,8 +52,9 @@ export class WordFindComponent implements OnInit {
     const pattern: string = this.form.controls['pattern'].value;
     const page: number = this.form.controls['page'].value;
     const size: number = this.form.controls['size'].value;
+    const sort: string = this.form.controls['sorts'].value;
 
-    return this.wordService.findAll(pattern, page, size, this.form.controls['sorts'].value)
+    return this.wordService.findAll(pattern, page, size, sort)
       .subscribe(data => {
         this.words = data;
       });
