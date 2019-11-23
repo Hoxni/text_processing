@@ -55,15 +55,22 @@ export class WordService {
     return this.http.post(`${LinksService.apiUrl}/words/text`, file);
   }
 
-  stat(file: string) {
-    return this.http.post(`${LinksService.apiUrl}/words/stat`, file).pipe(
+  stat(file: string, sort : string) {
+    return this.http.post(`${LinksService.apiUrl}/words/stat`, new Word({word : file, frequency : null, lemmaTags: null, tags: null, lemma: sort})).pipe(
       map((response: []) => {
         return response.map(o => new Word(o));
       }));
   }
 
-  tagStat() {
-    return this.http.get(`${LinksService.apiUrl}/words/stat`).pipe(
+  tagStat(sort : string) {
+    return this.http.post(`${LinksService.apiUrl}/words/stat-a`, sort).pipe(
+      map((response: []) => {
+        return response.map(o => new Word(o));
+      }));
+  }
+
+  tagStatA(file: string, sort: string) {
+    return this.http.post(`${LinksService.apiUrl}/words/stat-tag`, new Word({word : file, frequency : null, lemmaTags: null, tags: null, lemma: sort})).pipe(
       map((response: []) => {
         return response.map(o => new Word(o));
       }));

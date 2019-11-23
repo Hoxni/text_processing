@@ -19,6 +19,7 @@ import {MatTooltipModule} from "@angular/material/tooltip";
 import { TooltipModule } from 'ng2-tooltip-directive';
 import {PopoverModule} from 'ngx-popover';
 import { TextAnnotateComponent } from './text-annotate/text-annotate.component';
+import { WordStatComponent } from './word-stat/word-stat.component';
 
 const appRoutes: Routes = [
   {
@@ -45,6 +46,10 @@ const appRoutes: Routes = [
     path: 'text',
     component: TextAnnotateComponent
   },
+  {
+    path: 'stat',
+    component: WordStatComponent
+  },
 ];
 
 @NgModule({
@@ -56,6 +61,7 @@ const appRoutes: Routes = [
     WordChangeComponent,
     WordsExtractComponent,
     TextAnnotateComponent,
+    WordStatComponent,
   ],
   imports: [
     RouterModule.forRoot(appRoutes),

@@ -68,7 +68,17 @@ public class WordController {
     }
 
     @PostMapping("/words/stat")
-    public ResponseEntity<List<Word>> stat(@RequestBody String model) throws Exception {
+    public ResponseEntity<List<Word>> stat(@RequestBody Word model) throws Exception {
         return ResponseEntity.ok(wordService.stat(model));
+    }
+
+    @PostMapping("/words/stat-tag")
+    public ResponseEntity<List<Word>> statTag(@RequestBody Word model) throws Exception {
+        return ResponseEntity.ok(wordService.statTag(model));
+    }
+
+    @PostMapping("/words/stat-a")
+    public ResponseEntity<List<Word>> statA(@RequestBody String model) throws Exception {
+        return ResponseEntity.ok(wordService.statA(model));
     }
 }

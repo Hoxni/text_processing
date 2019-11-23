@@ -35,7 +35,6 @@ export class WordsListComponent {
 
     this.sort = 'alphabetic';
 
-    this.tagStat();
   };
 
   getSortTypes(){
@@ -59,12 +58,6 @@ export class WordsListComponent {
 
   setSort(e) {
     this.sort = e.currentTarget.value;
-  }
-
-  tagStat() {
-    this.wordService.tagStat().subscribe(data => {
-      data.forEach(d => this.tag.set(d.word, d.frequency));
-    });
   }
 
   showPopover(e){

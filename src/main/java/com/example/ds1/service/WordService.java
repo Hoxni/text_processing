@@ -6,19 +6,23 @@ import com.example.ds1.error.WordNotFoundException;
 import com.example.ds1.mapper.WordMapper;
 import com.example.ds1.model.Word;
 import com.example.ds1.postagging.POSTagging;
+import com.example.ds1.repository.TagRepository;
 import com.example.ds1.repository.WordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static com.example.ds1.utils.Utils.createPageable;
 import static com.example.ds1.utils.Utils.zeroIfNull;
@@ -29,6 +33,7 @@ public class WordService {
 
     private final WordRepository wordRepository;
     private final POSTagging posTagging;
+    private final TagRepository tagRepository;
 
     private static final Long QUERY_SIZE = 1000L;
 
@@ -133,9 +138,32 @@ public class WordService {
         return posTagging.text(text);
     }
 
-    public List<Word> stat(String model) throws Exception {
-        String path = "texts/" + model;
+    public List<Word> stat(Word model) throws Exception {
+        String path = "texts/" + model.getWord();
         String text = new String(Files.readAllBytes(Paths.get(path)));
-        return posTagging.statistics(text);
+        return posTagging.statistics(text, model.getLemma());
+    }
+
+    public List<Word> statTag(Word model) throws Exception {
+        String path = "texts/" + model.getWord();
+        String text = new String(Files.readAllBytes(Paths.get(path)));
+        return posTagging.statisticsTag(text, model.getLemma());
+    }
+
+    @Transactional
+    public List<Word> statA(String sort) {
+        List<Word> w = StreamSupport.stream(tagRepository.findAll().spliterator(), false)
+                .map(t -> Word.builder().word(t.getTagName()).frequency((long) t.getWords().size()).build())
+                .collect(Collectors.toList());
+        if (sort.equals("alphabetic")) {
+            w.sort(Comparator.comparing(Word::getWord));
+        } else if (sort.equals("frequency")) {
+            w.sort(Comparator.comparing(Word::getFrequency));
+        } else if (sort.equals("alphabetic_desc")) {
+            w.sort(Comparator.comparing(Word::getFrequency).reversed());
+        } else if (sort.equals("frequency_desc")) {
+            w.sort(Comparator.comparing(Word::getFrequency).reversed());
+        }
+        return w;
     }
 }

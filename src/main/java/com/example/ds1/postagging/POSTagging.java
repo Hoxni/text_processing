@@ -142,7 +142,7 @@ public class POSTagging {
         return null;
     }
 
-    public List<Word> statistics(String text) throws Exception {
+    public List<Word> statistics(String text, String sort) throws Exception {
         String res = text(text);
         Map<String, Long> stat = new HashMap<>();
         String[] sentences = detectSentences(res);
@@ -168,11 +168,69 @@ public class POSTagging {
                 }
             }
         }
-        return stat.entrySet().stream()
+        List<Word> w = stat.entrySet().stream()
                 .map(e -> Word.builder()
                         .word(e.getKey())
                         .frequency(e.getValue())
                         .build())
                 .collect(Collectors.toList());
+        if (sort.equals("alphabetic")) {
+            w.sort(Comparator.comparing(Word::getWord));
+        } else if (sort.equals("frequency")) {
+            w.sort(Comparator.comparing(Word::getFrequency));
+        } else if (sort.equals("alphabetic_desc")) {
+            w.sort(Comparator.comparing(Word::getFrequency).reversed());
+        } else if (sort.equals("frequency_desc")) {
+            w.sort(Comparator.comparing(Word::getFrequency).reversed());
+        }
+        return w;
+    }
+
+    public List<Word> statisticsTag(String text, String sort) throws Exception {
+        initialize("/en-pos-maxent.bin");
+        try {
+            Map<String, Long> stat = new HashMap<>();
+            if (model != null) {
+                POSTaggerME tagger = new POSTaggerME(model);
+                String[] sentences = detectSentences(text);
+                for (String sentence : sentences) {
+                    String[] whitespaceTokenizerLine = WhitespaceTokenizer.INSTANCE
+                            .tokenize(sentence);
+                    whitespaceTokenizerLine[whitespaceTokenizerLine.length - 1] =
+                            whitespaceTokenizerLine[whitespaceTokenizerLine.length - 1]
+                                    .replaceAll("[,.?!]+", "");
+
+                    String[] tags = tagger.tag(whitespaceTokenizerLine);
+
+                    for (int i = 0; i < whitespaceTokenizerLine.length - 1; i++) {
+                        String t = tags[i] + "_" + tags[i + 1];
+                        if (stat.containsKey(t)) {
+                            stat.put(t, stat.get(t) + 1);
+                        } else {
+                            stat.put(t, 1L);
+                        }
+                    }
+                }
+            }
+            List<Word> w = stat.entrySet().stream()
+                    .map(e -> Word.builder()
+                            .word(e.getKey())
+                            .frequency(e.getValue())
+                            .build())
+                    .collect(Collectors.toList());
+            if (sort.equals("alphabetic")) {
+                w.sort(Comparator.comparing(Word::getWord));
+            } else if (sort.equals("frequency")) {
+                w.sort(Comparator.comparing(Word::getFrequency));
+            } else if (sort.equals("alphabetic_desc")) {
+                w.sort(Comparator.comparing(Word::getFrequency).reversed());
+            } else if (sort.equals("frequency_desc")) {
+                w.sort(Comparator.comparing(Word::getFrequency).reversed());
+            }
+            return w;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

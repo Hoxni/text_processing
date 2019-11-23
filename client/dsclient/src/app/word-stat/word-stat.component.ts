@@ -5,11 +5,11 @@ import {FormBuilder} from "@angular/forms";
 import {Word} from "../model/word";
 
 @Component({
-  selector: 'app-text-annotate',
-  templateUrl: './text-annotate.component.html',
-  styleUrls: ['./text-annotate.component.css']
+  selector: 'app-word-stat',
+  templateUrl: './word-stat.component.html',
+  styleUrls: ['./word-stat.component.css']
 })
-export class TextAnnotateComponent implements OnInit {
+export class WordStatComponent implements OnInit {
 
   @ViewChild('fileInput', null) el: ElementRef;
   private file: string;
@@ -28,10 +28,11 @@ export class TextAnnotateComponent implements OnInit {
     this.file = e.target.files[0].name;
   }
 
-  annotateText() {
-    this.wordService.text(this.file).subscribe((data : Word) => {
-      this.text = data.word;
-    });
+  stat() {
+    return this.wordService.tagStatA(this.file, this.sort)
+      .subscribe(data => {
+        this.stats = data;
+      });
   }
 
   getSortTypes(){
@@ -46,8 +47,8 @@ export class TextAnnotateComponent implements OnInit {
     this.sort = e.currentTarget.value;
   }
 
-  stat() {
-    return this.wordService.stat(this.file, this.sort)
+  statTags(){
+    this.wordService.tagStat(this.sort)
       .subscribe(data => {
         this.stats = data;
       });

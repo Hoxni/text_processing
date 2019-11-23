@@ -2,6 +2,7 @@ package com.example.ds1.repository;
 
 import com.example.ds1.entity.WordEntity;
 import com.example.ds1.entity.WordTag;
+import com.example.ds1.model.Word;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
