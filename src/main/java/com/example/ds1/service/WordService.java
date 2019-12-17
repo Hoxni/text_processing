@@ -238,8 +238,17 @@ public class WordService {
     }
 
     public List<Word> search(String pattern, int page, int size) throws Exception {
-        var w = posTagging.tag(pattern, "");
-        var wl = w.values();
+        var s = posTagging.tag(pattern, "");
+        var wl =  s.values().stream()
+                .filter(d -> {
+                    for (var t : d.getTags()) {
+                        if (List.of("CD", "JJ", "JJS", "NN", "NNS", "NNP", "NNPS", "RB", "RBR", "RBS", "VB", "VBD", "VBG", "VBN", "VBP", "VBZ").contains(t.getTagName())) {
+                            return true;
+                        }
+                    }
+                    return false;
+                })
+                .collect(Collectors.toList());
         var res = new ArrayList<Word>();
         for (var l : wl) {
             for (var x : texts.entrySet()) {
