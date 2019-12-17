@@ -1,9 +1,15 @@
 package com.example.ds1.postagging;
 
+import com.example.ds1.entity.Text;
 import com.example.ds1.entity.WordEntity;
 import com.example.ds1.entity.WordTag;
 import com.example.ds1.model.Word;
+import com.example.ds1.repository.TextRepo;
 import com.example.ds1.repository.WordRepository;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.var;
 import opennlp.tools.lemmatizer.DictionaryLemmatizer;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
@@ -12,6 +18,7 @@ import opennlp.tools.sentdetect.SentenceDetectorME;
 import opennlp.tools.sentdetect.SentenceModel;
 import opennlp.tools.tokenize.WhitespaceTokenizer;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,14 +27,13 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class POSTagging {
 
     private POSTaggerME tagger = null;
     private POSModel model = null;
     private DictionaryLemmatizer lemmatizer;
-
-    public POSTagging(WordRepository wordRepository) {
-    }
+    public static List<Text> texts = new ArrayList<>();
 
     public void initialize(String lexiconFileName) {
         try {
@@ -41,13 +47,15 @@ public class POSTagging {
         }
     }
 
-    public Map<String, WordEntity> tag(String text) {
+    @Transactional
+    public Map<String, WordEntity> tag(String text, String file) {
         initialize("/en-pos-maxent.bin");
         try {
             if (model != null) {
                 POSTaggerME tagger = new POSTaggerME(model);
                 String[] sentences = detectSentences(text);
                 Map<String, WordEntity> words = new HashMap<>();
+                Long counter = 0L;
                 for (String sentence : sentences) {
                     String[] whitespaceTokenizerLine = WhitespaceTokenizer.INSTANCE
                             .tokenize(sentence);
@@ -71,28 +79,36 @@ public class POSTagging {
                         String tag = tags[i].trim()
                                 .replaceAll("[,.!?]+", "");
                         String lemma = !lemmas[i].equals("O") ? lemmas[i] : word;
-                        if (words.containsKey(word) && !word.isEmpty()) {
-                            WordEntity w = words.get(word);
+                        if (words.containsKey(lemma) && !word.isEmpty()) {
+                            WordEntity w = words.get(lemma);
                             w.setFrequency(w.getFrequency() + 1);
                             if (tag.matches("\\w+\\$*")) {
                                 w.getTags().add(new WordTag(tag));
                                 w.setLemma(lemma);
+                                w.getTexts().add(Text.builder().pos((long)text.indexOf(word, counter.intValue())).text(file).word(lemma.toLowerCase()).build());
+                                counter++;
                                 System.out.println(word + " " + tag + " " + lemma);
                             }
                         } else if (!word.isEmpty()) {
                             Set<WordTag> wordTags = new HashSet<>();
+                            Text t = Text.builder().pos((long)text.indexOf(word, counter.intValue())).text(file).word(lemma.toLowerCase()).build();
+                            counter++;
                             if (tag.matches("\\w+\\$*")) {
                                 wordTags.add(new WordTag(tag));
                                 System.out.println(word + " " + tag + " " + lemma);
                             }
-                            words.put(word, WordEntity.builder()
+                            var arr = new ArrayList<Text>();
+                            arr.add(t);
+                            words.put(lemma, WordEntity.builder()
                                     .word(word)
                                     .frequency(1L)
                                     .tags(wordTags)
                                     .lemma(lemma)
+                                    .texts(arr)
                                     .build());
                         }
                     }
+                    //counter += whitespaceTokenizerLine.length;
                 }
                 return words;
             }

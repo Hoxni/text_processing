@@ -147,6 +147,22 @@ export class WordChangeComponent implements OnInit {
     }
   }
 
+  onBlur1(event, input) {
+    if (event.relatedTarget !== null && event.relatedTarget.id === 'change') {
+      const word = this.words[this.row].word.trim();
+      const change = input.innerText;
+      this.word = change;
+      this.wordService.change(word, new Word({word: change, frequency: null, tags: this.words[this.row].tags, lemma: change, lemmaTags: null}));
+
+    } else if (event.relatedTarget !== null &&
+      event.relatedTarget.className === 'dropdown-btn' &&
+      event.path[4].rowIndex - 1 === this.row) {
+    } else {
+      this.row = null;
+      input.firstChild.data = this.word;
+    }
+  }
+
   ngOnInit() {
   }
 

@@ -3,6 +3,7 @@ package com.example.ds1.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 import static javax.persistence.CascadeType.MERGE;
@@ -43,6 +44,12 @@ public class WordEntity {
             inverseJoinColumns = @JoinColumn(name = "tag_tag_name"))
     @ElementCollection(targetClass = WordTag.class)
     private Set<WordTag> tags;
+
+    @Getter
+    @Setter
+    @ElementCollection
+    @CollectionTable(name = "word_text", joinColumns = @JoinColumn(name = "word_id"), foreignKey = @ForeignKey(name = "WORD_TEXT_WORDS_ID_FK"))
+    private List<Text> texts;
 
 
 }

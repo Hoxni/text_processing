@@ -62,6 +62,12 @@ export class WordService {
       }));
   }
 
+  save(text: string) {
+    return this.http.post(`http://localhost:8086/api/v1/text`,
+      new Word({word: text, frequency: 0, tags: null, lemma: null, lemmaTags: null}))
+      .subscribe();
+  }
+
   tagStat(sort : string) {
     return this.http.post(`${LinksService.apiUrl}/words/stat-a`, sort).pipe(
       map((response: []) => {
@@ -76,4 +82,11 @@ export class WordService {
       }));
   }
 
+  searchAll(pattern: string, page: number, size: number, sort: string) {
+    return this.http.get(`${LinksService.apiUrl}/words/search?` +
+      `pattern=${pattern}&page=${page}&size=${size}`).pipe(
+      map((response: []) => {
+        return response.map(o => new Word(o));
+      }));
+  }
 }

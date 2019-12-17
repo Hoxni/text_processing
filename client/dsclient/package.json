@@ -21,6 +21,7 @@
     "@angular/platform-browser": "~8.2.8",
     "@angular/platform-browser-dynamic": "~8.2.8",
     "@angular/router": "~8.2.8",
+    "bad-words": "^3.0.3",
     "ng-multiselect-dropdown": "^0.2.6",
     "ng2-tooltip-directive": "^2.8.17",
     "ngx-popover": "0.0.16",

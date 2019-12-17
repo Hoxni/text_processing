@@ -20,6 +20,7 @@ import { TooltipModule } from 'ng2-tooltip-directive';
 import {PopoverModule} from 'ngx-popover';
 import { TextAnnotateComponent } from './text-annotate/text-annotate.component';
 import { WordStatComponent } from './word-stat/word-stat.component';
+import { WordSearchComponent } from './word-search/word-search.component';
 
 const appRoutes: Routes = [
   {
@@ -50,6 +51,10 @@ const appRoutes: Routes = [
     path: 'stat',
     component: WordStatComponent
   },
+  {
+    path: 'search',
+    component: WordSearchComponent
+  },
 ];
 
 @NgModule({
@@ -62,6 +67,7 @@ const appRoutes: Routes = [
     WordsExtractComponent,
     TextAnnotateComponent,
     WordStatComponent,
+    WordSearchComponent,
   ],
   imports: [
     RouterModule.forRoot(appRoutes),

@@ -44,6 +44,14 @@ public class WordController {
         return ResponseEntity.ok(wordService.findWordsWithPattern(pattern, page, size, sort));
     }
 
+    @GetMapping("/words/search")
+    public ResponseEntity<List<Word>> search(
+            @RequestParam String pattern,
+            @RequestParam(defaultValue = "1") @Min(1) int page,
+            @RequestParam(defaultValue = "100") @Max(200) int size) throws Exception {
+        return ResponseEntity.ok(wordService.search(pattern, page, size));
+    }
+
     @PostMapping("/words/extract")
     public ResponseEntity extractWords(@RequestBody String model) throws Exception {
         wordService.extractWords(model);
@@ -80,5 +88,10 @@ public class WordController {
     @PostMapping("/words/stat-a")
     public ResponseEntity<List<Word>> statA(@RequestBody String model) throws Exception {
         return ResponseEntity.ok(wordService.statA(model));
+    }
+
+    @PostMapping("/text")
+    public ResponseEntity<String> save(@RequestBody Word model) throws Exception {
+        return ResponseEntity.ok(wordService.save(model));
     }
 }

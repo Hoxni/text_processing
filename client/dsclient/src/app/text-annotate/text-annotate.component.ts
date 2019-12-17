@@ -34,6 +34,10 @@ export class TextAnnotateComponent implements OnInit {
     });
   }
 
+  saveText(e) {
+    this.wordService.save(e);
+  }
+
   getSortTypes(){
     return [
       {name: 'alphabetic'},
