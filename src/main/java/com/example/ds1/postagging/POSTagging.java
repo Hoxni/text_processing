@@ -4,10 +4,6 @@ import com.example.ds1.entity.Text;
 import com.example.ds1.entity.WordEntity;
 import com.example.ds1.entity.WordTag;
 import com.example.ds1.model.Word;
-import com.example.ds1.repository.TextRepo;
-import com.example.ds1.repository.WordRepository;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.var;
 import opennlp.tools.lemmatizer.DictionaryLemmatizer;
@@ -23,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -85,13 +80,13 @@ public class POSTagging {
                             if (tag.matches("\\w+\\$*")) {
                                 w.getTags().add(new WordTag(tag));
                                 w.setLemma(lemma);
-                                w.getTexts().add(Text.builder().pos((long)text.indexOf(word, counter.intValue())).text(file).word(lemma.toLowerCase()).build());
+                                w.getTexts().add(Text.builder().pos((long) text.indexOf(word, counter.intValue())).text(file).word(lemma.toLowerCase()).build());
                                 counter++;
                                 System.out.println(word + " " + tag + " " + lemma);
                             }
                         } else if (!word.isEmpty()) {
                             Set<WordTag> wordTags = new HashSet<>();
-                            Text t = Text.builder().pos((long)text.indexOf(word, counter.intValue())).text(file).word(lemma.toLowerCase()).build();
+                            Text t = Text.builder().pos((long) text.indexOf(word, counter.intValue())).text(file).word(lemma.toLowerCase()).build();
                             counter++;
                             if (tag.matches("\\w+\\$*")) {
                                 wordTags.add(new WordTag(tag));
@@ -248,5 +243,47 @@ public class POSTagging {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public List<Word> getList(String text) throws IOException {
+        Map<String, Word> words = new HashMap<>();
+        String[] sentences = detectSentences(text);
+        for (String s : sentences) {
+            String[] whitespaceTokenizerLine = WhitespaceTokenizer.INSTANCE
+                    .tokenize(s);
+            List<String> words1 = Arrays.stream(whitespaceTokenizerLine).map(l -> {
+                int u = l.indexOf("_");
+                return l.substring(0, u);
+            }).collect(Collectors.toList());
+            List<String> tags1 = Arrays.stream(whitespaceTokenizerLine).map(l -> {
+                int u = l.indexOf("_");
+                return l.substring(u + 1);
+            }).collect(Collectors.toList());
+            List<List<String>> lemmas = lemmatizer.lemmatize(words1, tags1);
+            for (int i = 0; i < words1.size(); i++) {
+                String word = words1.get(i).trim()
+                        .replaceAll("[,.!?]+", "")
+                        .replaceAll("[^\\w\\'\\-]", "")
+                        .replaceAll("'\\w+", "")
+                        .replaceAll("\\w+'", "")
+                        .replaceAll("\\d+", "");
+                if (words.containsKey(word)) {
+                    Word w = words.get(word);
+                    w.setFrequency(w.getFrequency() + 1);
+                    w.getTags().add(tags1.get(i));
+                    words.put(word, w);
+                } else {
+                    Set<String> tags = new HashSet<>();
+                    tags.add(tags1.get(i));
+                    String lemma = lemmas.get(i).get(0);
+                    lemma = lemma.equals("O") ? word : lemma;
+                    words.put(word, Word.builder().word(word).frequency(1L).tags(tags).lemma(lemma).build());
+                }
+            }
+        }
+
+        return words.values().stream()
+                .sorted(Comparator.comparing(Word::getWord))
+                .collect(Collectors.toList());
     }
 }

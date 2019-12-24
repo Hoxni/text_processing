@@ -17,10 +17,13 @@ export class TextAnnotateComponent implements OnInit {
   private stats: Word[];
   private sorts: { name: string}[];
   private sort: string;
+  private visible: boolean;
+  private words: Word[];
 
   constructor(private wordService: WordService, private router: Router, private fb: FormBuilder) {
     this.sort = 'alphabetic';
     this.sorts = this.getSortTypes();
+    this.visible = true;
   }
 
   fileUpload(e) {
@@ -29,13 +32,51 @@ export class TextAnnotateComponent implements OnInit {
   }
 
   annotateText() {
+    this.visible = true;
     this.wordService.text(this.file).subscribe((data : Word) => {
       this.text = data.word;
     });
   }
 
-  saveText(e) {
-    this.wordService.save(e);
+  getList(e) {
+    this.visible = false;
+    this.wordService.getList(e)
+      .subscribe(data => {
+        this.words = data;
+      });
+  }
+
+  sortList() {
+    switch (this.sort) {
+      case 'alphabetic_desc': {
+        this.words = this.words.sort((a, b) => {
+          return -a.word.localeCompare(b.word, 'en')
+        });
+        break;
+      }
+      case 'frequency': {
+        this.words = this.words.sort((a, b) => {
+          return a.frequency > b.frequency ? 1 : -1;
+        });
+        break;
+      }
+      case 'frequency_desc': {
+        this.words = this.words.sort((a, b) => {
+          return a.frequency > b.frequency ? -1 : 1;
+        });
+        break;
+      }
+      default: {
+        this.words = this.words.sort((a, b) => {
+          return a.word.localeCompare(b.word, 'en')
+        });
+        break;
+      }
+    }
+  }
+
+  saveText() {
+    this.wordService.save(this.text);
   }
 
   getSortTypes(){
