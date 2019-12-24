@@ -94,4 +94,9 @@ public class WordController {
     public ResponseEntity<String> save(@RequestBody Word model) throws Exception {
         return ResponseEntity.ok(wordService.save(model));
     }
+
+    @PostMapping("/get-list")
+    public ResponseEntity<List<Word>> getList(@RequestBody Word model) throws Exception {
+        return ResponseEntity.ok(wordService.getList(model));
+    }
 }

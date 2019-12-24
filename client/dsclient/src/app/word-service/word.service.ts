@@ -89,4 +89,12 @@ export class WordService {
         return response.map(o => new Word(o));
       }));
   }
+
+  getList(text: string) {
+    return this.http.post(`http://localhost:8086/api/v1/get-list`,
+      new Word({word: text, frequency: 0, tags: null, lemma: null, lemmaTags: null}))
+      .pipe(map((response: []) => {
+          return response.map(o => new Word(o));
+        }));
+  }
 }
